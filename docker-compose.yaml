@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+    container_name: app
+    networks:
+      - minharede
+    tty: true
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=D
+    container_name: db
+    restart: always
+    tty: true
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - minharede
+
+  nginx:
+    build: 
+      context: ./nginx
+    image: sonegobruno/nginx
+    container_name: nginx
+    networks:
+      - minharede
+    ports: 
+      - "8080:80"
+
+networks:
+  minharede:
+    driver: bridge
