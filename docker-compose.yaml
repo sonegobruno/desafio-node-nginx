@@ -5,8 +5,12 @@ services:
     build:
       context: .
     container_name: app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh
+    command: "node index.js"
     networks:
       - minharede
+    volumes:
+      - .:/app
     tty: true
     depends_on:
       - db
